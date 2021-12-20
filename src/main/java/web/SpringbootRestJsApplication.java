@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringBootSecurityCrudApplication {
+public class SpringbootRestJsApplication {
     public static void main(String[] args) {
-        SpringApplication.run(SpringBootSecurityCrudApplication.class, args);
+        SpringApplication.run(SpringbootRestJsApplication.class, args);
     }
 }

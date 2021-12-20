@@ -2,8 +2,8 @@ package web.controller;
 
 import web.model.Role;
 import web.model.User;
-import web.service.UserService;
 import web.service.RoleService;
+import web.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
