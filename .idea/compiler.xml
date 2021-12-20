@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="SpringBootSecurityCRUD" />
         <module name="spring-security" />
+        <module name="springboot-rest-js" />
       </profile>
     </annotationProcessing>
   </component>
@@ -15,6 +16,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="SpringBootSecurityCRUD" options="-parameters" />
       <module name="spring-security" options="-parameters" />
+      <module name="springboot-rest-js" options="-parameters" />
     </option>
   </component>
 </project>
