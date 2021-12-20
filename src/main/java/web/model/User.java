@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -25,7 +26,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name")
     private String firstName;
 
     @Column(name = "surname")
@@ -34,7 +35,7 @@ public class User implements UserDetails {
     @Column(name = "age")
     private byte age;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @Column(name = "password", nullable = false)
@@ -69,7 +70,7 @@ public class User implements UserDetails {
     public String getFirstName() { return firstName; }
 
     @Override
-    public String getUsername() { return getFirstName(); }
+    public String getUsername() { return getEmail(); }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -108,6 +109,10 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() { return getRoles(); }
 
     public Set<Role> getRoles() { return roles; }
+
+    public String getRolesAsString() {
+        return roles.stream().map(Role::toString).collect(Collectors.joining(" "));
+    }
 
     public void setRoles(Set<Role> roles) { this.roles = new HashSet<>(); }
 

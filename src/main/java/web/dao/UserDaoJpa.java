@@ -39,6 +39,13 @@ public class UserDaoJpa implements UserDao {
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        return entityManager
+                .createQuery("select u from User u inner join fetch u.roles where u.email = :email", User.class)
+                .setParameter("email", email).getSingleResult();
+    }
+
+    @Override
     public void updateUser(User user) {
         entityManager.merge(user);
     }

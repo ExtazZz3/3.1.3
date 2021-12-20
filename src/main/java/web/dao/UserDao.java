@@ -9,6 +9,7 @@ public interface UserDao {
     List<User> getAllUsers();
     User getUserById(Long id);
     User getUserByName(String name);
+    User getUserByEmail(String email);
     void updateUser(User user);
     void deleteUserById(Long id);
 }

@@ -4,7 +4,8 @@ import web.model.Role;
 import web.model.User;
 import web.service.UserService;
 import web.service.RoleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,26 +24,24 @@ import java.util.Set;
 @RequestMapping("/")
 public class UserController {
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
+	private final RoleService roleService;
 
-	@Autowired
-	private RoleService roleService;
-
-	@GetMapping("/login")
-	public String loginPage() {
-		return "login";
+	public UserController(UserService userService, RoleService roleService) {
+		this.userService = userService;
+		this.roleService = roleService;
 	}
 
 	@GetMapping("/admin")
-	public String getAllUsers(Model model) {
+	public String getAllUsers(@AuthenticationPrincipal UserDetails user, Model model) {
+		model.addAttribute("user", userService.getUserByUsername(user.getUsername()));
 		model.addAttribute("users", userService.getAllUsers());
-		return "index";
+		return "admin";
 	}
 
-	@GetMapping("user/{id}")
-	public String getUserById(@PathVariable("id") Long id, Model model) {
-		model.addAttribute("user", userService.getUserById(id));
+	@GetMapping("/user")
+	public String getUserById(@AuthenticationPrincipal UserDetails user, Model model) {
+		model.addAttribute("user", userService.getUserByUsername(user.getUsername()));
 		return "user";
 	}
 
@@ -51,51 +50,18 @@ public class UserController {
 		return roleService.getAllRoles();
 	}
 
-	@GetMapping("/admin/new")
-	public String addUser(Model model) {
-		model.addAttribute("user", new User());
-		return "new";
-	}
-
 	@PostMapping("/admin/new")
 	public String addUser(@ModelAttribute("user") User user,
 						  @RequestParam(value = "roles") Set<Role> roles) {
-
-		if (roles != null) {
-			for (Role role : roles) {
-				if ("ADMIN".equals(role.getRole())) {
-					role.setId(1L);
-				}
-				else if ("USER".equals(role.getRole())) {
-					role.setId(2L);
-				}
-				user.addRole(role);
-			}
-		}
+		setIdToRoles(roles, user);
 		userService.addUser(user);
 		return "redirect:/admin";
-	}
-
-	@GetMapping("/admin/edit/{id}")
-	public String updateUserById(@PathVariable("id") Long id, Model model) {
-		model.addAttribute("user", userService.getUserById(id));
-		return "edit";
 	}
 
 	@PutMapping("/admin/edit/{id}")
 	public String updateUser(@ModelAttribute("user") User user,
 							 @RequestParam(value = "roles") Set<Role> roles) {
-		if (roles != null) {
-			for (Role role : roles) {
-				if ("ADMIN".equals(role.getRole())) {
-					role.setId(1L);
-				}
-				else if ("USER".equals(role.getRole())) {
-					role.setId(2L);
-				}
-				user.addRole(role);
-			}
-		}
+		setIdToRoles(roles, user);
 		userService.updateUser(user);
 		return "redirect:/admin";
 	}
@@ -103,5 +69,19 @@ public class UserController {
 	public String deleteUserById(@PathVariable("id") Long id) {
 		userService.deleteUserById(id);
 		return "redirect:/admin";
+	}
+
+	private void setIdToRoles(Set<Role> roles, User user) {
+		if (roles != null) {
+			for (Role role : roles) {
+				if ("ADMIN".equals(role.getRole())) {
+					role.setId(1L);
+				}
+				else if ("USER".equals(role.getRole())) {
+					role.setId(2L);
+				}
+				user.addRole(role);
+			}
+		}
 	}
 }

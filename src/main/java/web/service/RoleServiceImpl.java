@@ -1,6 +1,5 @@
 package web.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.dao.RoleDao;
@@ -11,8 +10,11 @@ import java.util.List;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    @Autowired
-    RoleDao dao;
+    private final RoleDao dao;
+
+    public RoleServiceImpl(RoleDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     @Transactional
