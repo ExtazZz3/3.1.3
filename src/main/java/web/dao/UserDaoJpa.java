@@ -39,6 +39,11 @@ public class UserDaoJpa implements UserDao {
     }
 
     @Override
+    public void updateUser(User user) {
+        entityManager.merge(user);
+    }
+
+    @Override
     public void deleteUserById(Long id) {
         entityManager.createQuery("delete from User u where u.id = :id")
                 .setParameter("id", id).executeUpdate();
